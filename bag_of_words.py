@@ -6,6 +6,7 @@ import sklearn.linear_model
 import sklearn.pipeline
 
 from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.utils import shuffle
 
 
 def main():
@@ -15,10 +16,14 @@ def main():
     x_train_N = x_train_df.to_numpy()[:, 1]
     y_train_N = y_train_df.to_numpy()[:, 0]
 
+    # shuffle dataset
+    x_train_N, y_train_N = shuffle(x_train_N, y_train_N, random_state=2)
+
+    # TODO: add in GridSearchCV with cross validation and hyperparams for logistic regression
+
     # print_word_freq(x_train_N)
 
     pipeline = make_bow_classifier_pipeline()
-
     pipeline.fit(x_train_N, y_train_N)
 
     yhat_train_N = pipeline.predict(x_train_N)
@@ -67,9 +72,7 @@ def make_bow_classifier_pipeline():
             # Given features construct the classifier (w/ hyperparam selection)
             (
                 "classifier",
-                sklearn.linear_model.LogisticRegression(
-                    C=1.0
-                ),
+                sklearn.linear_model.LogisticRegression(C=1.0),
             ),
         ]
     )
